@@ -32,7 +32,6 @@ public class MapFragment extends Fragment {
         webView = (WebView) view.findViewById(R.id.webview);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("file:///android_asset/PollenMap.html");
-        System.out.println("webview loaded");
 
         binding = FragmentMapBinding.inflate(inflater, container, false);
         return view;
