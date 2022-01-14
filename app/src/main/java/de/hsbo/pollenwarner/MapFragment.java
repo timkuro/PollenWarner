@@ -15,33 +15,43 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TableLayout;
 
+import org.json.JSONObject;
+
 import de.hsbo.pollenwarner.databinding.FragmentMapBinding;
 import de.hsbo.pollenwarner.services.WebAppInterface;
 
 public class MapFragment extends Fragment {
 
-    private FragmentMapBinding binding;
     private WebView webView;
     private View view;
     BroadcastReceiver receiver;
     WebAppInterface webAppInterface;
+    MainActivity activity;
+    String data;
 
 
 
     @Override
     public void onResume() {
         super.onResume();
-        if(receiver == null){
-            receiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    Log.d("Receiver", "created");
-                    String data = (String) intent.getExtras().get("pollen_data");
-                    webAppInterface.setPollenData(data);
-                }
-            };
-            getActivity().registerReceiver(receiver, new IntentFilter("allPollenData"));
+        data = activity.allData;
+        if(data != null){
+            webAppInterface.setPollenData(data);
         }
+        else{
+            if(receiver == null){
+                receiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        Log.d("Receiver", "created");
+                        data = (String) intent.getExtras().get("all_data");
+                        webAppInterface.setPollenData(data);
+                    }
+                };
+                getActivity().registerReceiver(receiver, new IntentFilter("pollenData"));
+            }
+        }
+
     }
 
 
@@ -61,8 +71,7 @@ public class MapFragment extends Fragment {
         webAppInterface = new WebAppInterface(getActivity());
         webView.addJavascriptInterface(webAppInterface, "Android");
 
-
-        binding = FragmentMapBinding.inflate(inflater, container, false);
+        activity = (MainActivity) getActivity();
         return view;
     }
 }

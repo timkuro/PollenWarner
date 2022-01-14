@@ -22,6 +22,10 @@ public class Polygon {
         return Region;
     }
 
+    public int getId() {
+        return id;
+    }
+
     // Raycasting Algorithm
     public Boolean PointInPolygon(Point point){
 

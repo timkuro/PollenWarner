@@ -33,6 +33,7 @@ public class MyLocationListener implements LocationListener {
     Context context;
     String oldRegion;
     String currentRegion = "";
+    int currentRegionId;
     private String CHANNEL_ID_1 = "rest Notification";
     private PendingIntent pendingIntent;
     private NotificationManager notificationManager;
@@ -62,6 +63,7 @@ public class MyLocationListener implements LocationListener {
 
             if (pip){
                 currentRegion = region.getRegion();
+                currentRegionId = region.getId();
                 if(oldRegion == null){
                     oldRegion = currentRegion;
                 }
@@ -83,7 +85,7 @@ public class MyLocationListener implements LocationListener {
             try {
                 for(int i=0; i< dataOfAllRegions.length(); i++){
                     JSONObject dataOfRegion = (JSONObject) dataOfAllRegions.get(i);
-                    if(dataOfRegion.get("name").equals(currentRegion)){
+                    if(dataOfRegion.get("id").equals(currentRegionId)){
                         dataOfCurrentRegion = dataOfRegion;
                     }
                 }
@@ -92,32 +94,23 @@ public class MyLocationListener implements LocationListener {
                 e.printStackTrace();
             }
 
+            if(dataOfCurrentRegion != null){
+                Log.d("Check Pollendata", dataOfCurrentRegion.toString());
 
-            Log.d("Check Pollendata", dataOfCurrentRegion.toString());
+                Intent intent = new Intent("pollenData");
+                intent.putExtra("region_data", dataOfCurrentRegion.toString());
+                intent.putExtra("geocoder", city);
+                intent.putExtra("all_data", dataOfAllRegions.toString());
 
-            Intent intent = new Intent("pollenDataOfRegion");
-            intent.putExtra("pollen_data", dataOfCurrentRegion.toString());
-            intent.putExtra("geocoder", city);
+                this.context.sendBroadcast(intent);
+            }
 
-            this.context.sendBroadcast(intent);
-
-            Intent intentAll = new Intent("allPollenData");
-            intentAll.putExtra("pollen_data", dataOfAllRegions.toString());
-
-            this.context.sendBroadcast(intentAll);
 
         }
     }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.e("ALARRRRM", "status changed");
-
-    }
-
     private void checkIfRegionChanged() {
-        if(currentRegion.equals(oldRegion)){
-            LocationService service = new LocationService();
+        if(currentRegion.equals(oldRegion) == false){
             sendNotification();
         }
     }

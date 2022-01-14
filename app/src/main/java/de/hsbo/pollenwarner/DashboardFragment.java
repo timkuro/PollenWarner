@@ -25,28 +25,38 @@ public class DashboardFragment extends Fragment {
     BroadcastReceiver receiver;
     private TableLayout tableLayout;
     private View view;
+    MainActivity activity;
+    String data;
+    String city;
 
     @Override
     public void onResume() {
         super.onResume();
-        if(receiver == null){
-            receiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    Log.d("Receiver", "created");
-                    try {
-                        JSONObject data = new JSONObject((String) intent.getExtras().get("pollen_data"));
-                        String city = (String) intent.getExtras().get("geocoder");
-                        updateLocation(city);
-                        updateTable(data);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
 
-                }
-            };
-            getActivity().registerReceiver(receiver, new IntentFilter("pollenDataOfRegion"));
+        city = activity.city;
+        data = activity.regionData;
+        if(city != null & data != null){
+            updateTable(data);
+            updateLocation(city);
         }
+        else{
+            if(receiver == null){
+                receiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        Log.d("Receiver", "created");
+                        data = (String) intent.getExtras().get("region_data");
+                        city = (String) intent.getExtras().get("geocoder");
+                        updateTable(data);
+                        updateLocation(city);
+
+                    }
+                };
+                getActivity().registerReceiver(receiver, new IntentFilter("pollenData"));
+            }
+        }
+
+
     }
 
     @Override
@@ -67,6 +77,8 @@ public class DashboardFragment extends Fragment {
         TableRow header = (TableRow) getLayoutInflater().inflate(R.layout.dashboard_header, null);
         tableLayout.addView(header);
 
+        activity = (MainActivity) getActivity();
+
 
 //        updateLocation(city);
 //        updateTable(data);
@@ -74,10 +86,10 @@ public class DashboardFragment extends Fragment {
         return view;
     }
 
-    private void updateTable(JSONObject data) {
+    private void updateTable(String data) {
         try {
-
-            JSONObject pollenData = (JSONObject)data.get("pollenData");
+            JSONObject dataJson = new JSONObject(data);
+            JSONObject pollenData = (JSONObject)dataJson.get("pollenData");
             JSONArray pollenNames = pollenData.names();
             for(int i = 0; i<pollenNames.length(); i++){
                 try {

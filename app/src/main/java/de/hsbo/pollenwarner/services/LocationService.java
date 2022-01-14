@@ -53,6 +53,7 @@ public class LocationService<WebService> extends Service {
 
     // minDistance GPS
     private static int minDistance = 0;
+    private static int minTime = 0;
 
     private static List<Polygon> regions;
 
@@ -121,7 +122,7 @@ public class LocationService<WebService> extends Service {
         }
 
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3000, minDistance, (LocationListener) listener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, (LocationListener) listener);
 
         Requestor requestor = new Requestor(this);
         requestor.requestPollenData(listener);
