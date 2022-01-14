@@ -2,32 +2,24 @@ package de.hsbo.pollenwarner.location;
 
 import java.util.List;
 
-import de.hsbo.pollenwarner.location.Point;
-
 public class Polygon {
 
     private List<Point> nodes;
     private String Region;
+    private int id;
 
     public Polygon(List<Point> nodes) {
         this.nodes = nodes;
     }
 
-    public Polygon(List<Point> nodes, String region) {
+    public Polygon(int id, List<Point> nodes, String region) {
+        this.id = id;
         this.nodes = nodes;
         Region = region;
     }
 
     public String getRegion() {
         return Region;
-    }
-
-    public void setRegion(String region) {
-        Region = region;
-    }
-
-    public List<Point> getNodes() {
-        return nodes;
     }
 
     // Raycasting Algorithm

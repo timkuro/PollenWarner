@@ -1,7 +1,6 @@
 package de.hsbo.pollenwarner.location;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,6 +55,7 @@ public class PollenRegions {
                 JSONObject feature = (JSONObject) array.get(i);
                 JSONObject properties = (JSONObject) feature.get("properties");
                 String regionName = (String) properties.get("GEN");
+                int id = (int) properties.get("GF");
                 JSONObject geometry = (JSONObject) feature.get("geometry");
                 JSONArray coordinates = (JSONArray) ((JSONArray) geometry.get("coordinates")).get(0);
 
@@ -81,7 +81,7 @@ public class PollenRegions {
 
                 }
 
-                Polygon polygon = new Polygon(points, regionName);
+                Polygon polygon = new Polygon(id, points, regionName);
 
                 regionsAsPolygons.add(polygon);
             }

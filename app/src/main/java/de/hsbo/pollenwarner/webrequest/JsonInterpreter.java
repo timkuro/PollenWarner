@@ -34,7 +34,8 @@ public class JsonInterpreter {
 
             JSONObject newCurrentRegion = new JSONObject();
 
-            newCurrentRegion.put("region_name", currentRegion.get("partregion_name"));
+            newCurrentRegion.put("partregion_id", currentRegion.get("partregion_id"));
+            newCurrentRegion.put("partregion_name", currentRegion.get("partregion_name"));
             newCurrentRegion.put("Pollen", currentRegion.get("Pollen"));
 
             region.put(i, newCurrentRegion);
@@ -63,5 +64,26 @@ public class JsonInterpreter {
         }
 
         return pollenDataOfRegion;
+    }
+
+    public static JSONArray getDataOfAllRegions(JSONObject pollenData){
+        JSONArray regionsArray = new JSONArray();
+        try {
+
+            JSONArray content = (JSONArray)pollenData.get("content");
+            for(int i=0; i<content.length(); i++){
+                JSONObject regionI = (JSONObject) content.get(i);
+
+                JSONObject currentRegion = new JSONObject();
+                currentRegion.put("id", (int) regionI.get("partregion_id"));
+                currentRegion.put("name", (String) regionI.get("partregion_name"));
+                currentRegion.put("pollenData", regionI.get("Pollen"));
+                regionsArray.put(currentRegion);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return regionsArray;
     }
 }
